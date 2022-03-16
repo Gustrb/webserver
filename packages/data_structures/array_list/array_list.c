@@ -17,6 +17,9 @@ array_list_t array_list_new_with_size(size_t size) {
      
   list.allocated_size = size;
   list.data = calloc(sizeof(void *), size);
+
+  err_n_die_if_true(!list.data, "Could not allocate array_list");
+  
   list.last_element = 0;
 
   return list;

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CFLAGS="-Wall -Wextra -pedantic -std=c11 -pedantic -pthread"
+CFLAGS="-Wall -Wextra -pedantic -std=c11 -pthread"
 OUTDIR="dist/main"
 files_to_compile=$(find . -name "*.c" -not -name "main.c")
 

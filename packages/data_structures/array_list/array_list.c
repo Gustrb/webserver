@@ -28,6 +28,9 @@ array_list_t array_list_new_with_size(size_t size) {
 // Each call to resize has the complexity of O(n) so call it with caution
 static inline void resize(array_list_t *list, size_t new_size) {
   list->data = realloc(list->data, new_size);
+  
+  err_n_die_if_true(!list->data, "Could not resize list");
+
   list->allocated_size = new_size;
 }
 

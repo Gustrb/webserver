@@ -5,7 +5,6 @@
 typedef struct array_list {
   void **data;
   size_t allocated_size;
-  size_t last_element;
 } array_list_t;
 
 // Allocates a new array_list with size 10 by default
@@ -26,12 +25,16 @@ array_list_t array_list_new_with_size(size_t size);
 // all of its elements
 void array_list_insert_at(array_list_t *list, size_t index, void *data_to_insert);
 
-// A simple shortcut to array_list_insert_at that inserts after the last element of a list 
+// A simple shortcut to array_list_insert_at that inserts after the last element of a list
 void array_list_push(array_list_t *list, void *data_to_insert);
 
 // Performs a simple array lookup, returns NULL if the index was not filled but is in the array bounds
-// But panics if it tries to access the list at a non-initialized index(or a negative?) 
+// But panics if it tries to access the list at a non-initialized index(or a negative?)
 void *array_list_get_element_at(array_list_t *list, size_t index);
+
+// Removes the element at the index and returns it, it copies the whole list after the removed element
+// so it has a complexity of O(n)
+void *array_list_remove_at(array_list_t *list, size_t index);
 
 // This function is used to free the memory allocated in the data field since its allocated in the heap
 // it does not free the pointer itself so in order to free it it would require an aditional call to free()

@@ -1,4 +1,5 @@
 #include "array_list.h"
+#include "../../utils/errors_helper.h"
 
 #include <stdio.h>
 
@@ -28,6 +29,8 @@ static inline void resize(array_list_t *list, size_t new_size) {
 }
 
 void array_list_insert_at(array_list_t *list, size_t index, void *data_to_insert) {
+  err_n_die_if_true(!list, "List cannot be null");
+
   if (index >= list->allocated_size) {
     resize(list, index);
   }
@@ -45,19 +48,18 @@ void array_list_push(array_list_t *list, void *data_to_insert) {
 }
 
 void *array_list_get_element_at(array_list_t *list, size_t index) {
-  // If out of the list's bounds it should panic and exit with EXIT_FAILURE code
-  //
+  err_n_die_if_true(!list, "List cannot be null");
+
   // TODO: maybe free list(?) since it is not going to be freed and might be a rather large
   // file structure
-  if (index < 0 || index > list->allocated_size) {
-    fprintf(stderr, "Error: Index out of bounds");
-    exit(EXIT_FAILURE);
-  }
+  err_n_die_if_true(index > list->allocated_size, "Index out of bounds");
 
   return list->data[index];
 }
 
 void array_list_free(array_list_t *list) {
+  err_n_die_if_true(!list, "List cannot be null");
+
   free(list->data);
   list->allocated_size = 0;
 }

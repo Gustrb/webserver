@@ -5,13 +5,10 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+#include "../utils/errors_helper.h"
+
 buffer_t buffered_reader_from_fd(int fd) {
-  // TODO: Create a function that tests wheter a condition is true and fails
-  // with a provided error message and returns EXIT_FAILURE
-  if (fd < 0) {
-    fprintf(stderr, "Error: Invalid file descriptor: %d", fd);
-    exit(EXIT_FAILURE);
-  }
+  err_n_die_if_true(fd < 0, "Error: Invalid file descriptor: %d", fd);
 
   buffer_t buffer;
 
@@ -21,8 +18,7 @@ buffer_t buffered_reader_from_fd(int fd) {
   // size variable
   ioctl(fd, FIONREAD, &size);
 
-  // TODO: Throw an error if size is less than 0, making the if (size > 0) test
-  // not necessary
+  err_n_die_if_true(size <= 0, "Invalid file size");
 
   // Allocating size + 1 to be able to store the null character
   //
@@ -31,11 +27,8 @@ buffer_t buffered_reader_from_fd(int fd) {
   // so this wont need to be freed manually through free()
   buffer.str = malloc(size + 1);
 
-  // If size is less than 0 an error should be thrown
-  if (size > 0) {
-    read(fd, buffer.str, size);
-    buffer.size = size;
-  }
+  read(fd, buffer.str, size);
+  buffer.size = size;
 
   // Adding the null character to the end of the string
   buffer.str[size] = '\0';
@@ -44,6 +37,8 @@ buffer_t buffered_reader_from_fd(int fd) {
 }
 
 void buffered_reader_free(buffer_t *buffer) {
+  err_n_die_if_true(!buffer, "Buffer cannot be null");
+
   free(buffer->str);
 }
 

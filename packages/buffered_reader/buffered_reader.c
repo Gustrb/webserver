@@ -1,11 +1,27 @@
 #include "buffered_reader.h"
 
+#include "../utils/errors_helper.h"
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-#include "../utils/errors_helper.h"
+buffer_t buffered_reader_from_filepath(const char *filepath) {
+  // Opens the file in readonly, through a unix syscall(open 2 see manpage)
+  // the open syscall returns a value smaller than 0 if an error has ocurred
+  // so the program should exit if thats the case
+  int descriptor = open(filepath, 0, O_RDONLY);
+
+  err_n_die_if_true(descriptor < 0, "Could not open file");
+
+  buffer_t buffer = buffered_reader_from_fd(descriptor);
+
+  // Closing the resource (and its descriptor)
+  close(descriptor);
+
+  return buffer;
+}
 
 buffer_t buffered_reader_from_fd(int fd) {
   err_n_die_if_true(fd < 0, "Error: Invalid file descriptor: %d", fd);
@@ -41,4 +57,3 @@ void buffered_reader_free(buffer_t *buffer) {
 
   free(buffer->str);
 }
-

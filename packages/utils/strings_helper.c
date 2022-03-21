@@ -20,6 +20,9 @@ string_t string_copy(string_t string) {
   return copy;
 }
 
+// TODO: Use a hashmap to store the strings
+// This method is terrible and it should be fixed since
+// it has a lot of memory leaks
 array_list_t string_split(string_t str, char delim) {
   array_list_t list = array_list_new();
   string_t copy = string_copy(str);
